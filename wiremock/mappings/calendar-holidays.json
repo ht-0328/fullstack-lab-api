@@ -1,0 +1,32 @@
+{
+  "mappings": [
+    {
+      "name": "calendar: 祝日（文化の日）",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/v1/days/2026-11-03",
+        "headers": { "X-Api-Key": { "matches": ".+" } }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "date": "2026-11-03", "businessDay": false, "holidayName": "文化の日" }
+      }
+    },
+    {
+      "name": "calendar: 祝日（勤労感謝の日）",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/v1/days/2026-11-23",
+        "headers": { "X-Api-Key": { "matches": ".+" } }
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "date": "2026-11-23", "businessDay": false, "holidayName": "勤労感謝の日" }
+      }
+    }
+  ]
+}

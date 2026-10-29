@@ -1,0 +1,47 @@
+{
+  "mappings": [
+    {
+      "name": "calendar: 障害の再現（500）。BFF の縮退表示を確認するため",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/v1/days/2099-12-31",
+        "headers": { "X-Api-Key": { "matches": ".+" } }
+      },
+      "response": {
+        "status": 500,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "error": "internal error" }
+      }
+    },
+    {
+      "name": "calendar: 遅延の再現（API の read-timeout 3s を超える）",
+      "priority": 1,
+      "request": {
+        "method": "GET",
+        "urlPath": "/v1/days/2099-01-01",
+        "headers": { "X-Api-Key": { "matches": ".+" } }
+      },
+      "response": {
+        "status": 200,
+        "fixedDelayMilliseconds": 5000,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "date": "2099-01-01", "businessDay": false, "holidayName": "元日" }
+      }
+    },
+    {
+      "name": "calendar: API キーなし（401）",
+      "priority": 5,
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/v1/days/.*",
+        "headers": { "X-Api-Key": { "absent": true } }
+      },
+      "response": {
+        "status": 401,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "error": "missing api key" }
+      }
+    }
+  ]
+}

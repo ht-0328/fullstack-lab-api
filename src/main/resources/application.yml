@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: api
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  flyway:
+    locations: classpath:db/migration
+  mvc:
+    # 入力エラーなども RFC 9457 (Problem Details) 形式で返す
+    problemdetails:
+      enabled: true
+
+server:
+  port: 8080
+
+external:
+  calendar:
+    base-url: ${EXTERNAL_CALENDAR_BASE_URL}
+    api-key: ${EXTERNAL_CALENDAR_API_KEY}
+    connect-timeout: 2s
+    read-timeout: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [requestId=%X{requestId:-}]"

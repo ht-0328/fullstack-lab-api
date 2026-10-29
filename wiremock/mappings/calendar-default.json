@@ -1,0 +1,15 @@
+{
+  "name": "calendar: 既定は営業日として返す（学習用に土日判定は省略）",
+  "priority": 10,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/v1/days/\\d{4}-\\d{2}-\\d{2}",
+    "headers": { "X-Api-Key": { "matches": ".+" } }
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "body": "{\"date\":\"{{request.pathSegments.[2]}}\",\"businessDay\":true,\"holidayName\":null}",
+    "transformers": ["response-template"]
+  }
+}

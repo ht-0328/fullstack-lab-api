@@ -1,0 +1,11 @@
+kotlin/com/example/fullstacklab/apiclient/apis/TasksApi.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/ApiAbstractions.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/ApiClient.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/PartConfig.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/RequestConfig.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/RequestMethod.kt
+kotlin/com/example/fullstacklab/apiclient/infrastructure/Serializer.kt
+kotlin/com/example/fullstacklab/apiclient/models/CreateTaskRequest.kt
+kotlin/com/example/fullstacklab/apiclient/models/DueDateInfo.kt
+kotlin/com/example/fullstacklab/apiclient/models/ProblemDetail.kt
+kotlin/com/example/fullstacklab/apiclient/models/Task.kt

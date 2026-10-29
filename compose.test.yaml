@@ -1,0 +1,58 @@
+name: fullstack-lab-api-test
+
+# この API 単体の結合テスト（Karate）用。依存する DB と外部サービス（WireMock）だけを立てる。
+# 値はテスト専用の使い捨て。実行: docker compose -f compose.test.yaml build && docker compose -f compose.test.yaml run --rm karate
+
+services:
+  karate:
+    build: ./karate
+    environment:
+      BASE_URL: http://api:8080
+    volumes:
+      - ./karate:/karate:ro
+    depends_on:
+      api:
+        condition: service_healthy
+
+  api:
+    build: .
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/api_test
+      DB_USERNAME: api_test
+      DB_PASSWORD: api_test
+      EXTERNAL_CALENDAR_BASE_URL: http://wiremock:8080
+      EXTERNAL_CALENDAR_API_KEY: test-key
+    depends_on:
+      db:
+        condition: service_healthy
+      wiremock:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/actuator/health/readiness"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: api_test
+      POSTGRES_USER: api_test
+      POSTGRES_PASSWORD: api_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U api_test -d api_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  wiremock:
+    image: wiremock/wiremock:3.13.2
+    command: ["--disable-banner"]
+    volumes:
+      - ./wiremock:/home/wiremock:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/__admin/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
