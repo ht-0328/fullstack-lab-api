@@ -17,6 +17,7 @@ fun Task.toDto() = TaskDto(
     createdBy = createdBy,
     createdByName = createdByName,
     createdAt = createdAt,
+    completedAt = completedAt,
 )
 
 fun CreateTaskRequest.toNewTask(createdBy: String, createdByName: String) = NewTask(

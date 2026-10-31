@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: fullstack-lab Task API
-  version: 1.0.0
+  version: 1.1.0
   description: タスクの業務 API。BFF からのみ呼ばれる内部サービス。
 servers:
   - url: http://api:8080
@@ -78,6 +78,21 @@ paths:
           $ref: '#/components/responses/Problem'
         '502':
           $ref: '#/components/responses/Problem'
+  /api/tasks/{id}/completion:
+    post:
+      tags: [tasks]
+      operationId: completeTask
+      summary: タスクを完了にする（冪等。既に完了していれば何もせず現状を返す）
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: 完了後のタスク（completedAt が入る）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Task' }
+        '404':
+          $ref: '#/components/responses/Problem'
 components:
   parameters:
     TaskId:
@@ -113,6 +128,7 @@ components:
         createdBy: { type: string }
         createdByName: { type: string }
         createdAt: { type: string, format: date-time }
+        completedAt: { type: string, format: date-time, nullable: true, description: 完了日時。null なら未完了 }
     CreateTaskRequest:
       type: object
       required: [title]

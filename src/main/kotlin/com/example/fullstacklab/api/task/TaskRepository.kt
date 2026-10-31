@@ -43,8 +43,19 @@ class TaskRepository(private val jdbc: JdbcClient) {
             .query(rowMapper)
             .single()
 
+    /**
+     * 未完了のタスクに完了日時を入れる。where 句で未完了のものだけを対象にするので、同時に 2 回呼ばれても完了日時は 1 回しか入らない。
+     * 既に完了している、または存在しないときは null を返し、どちらかは呼び出し側が findById で区別する
+     */
+    fun complete(id: Long): Task? =
+        jdbc.sql("update tasks set completed_at = now() where id = :id and completed_at is null returning $COLUMNS")
+            .param("id", id)
+            .query(rowMapper)
+            .optional()
+            .orElse(null)
+
     companion object {
-        private const val COLUMNS = "id, title, description, due_date, created_by, created_by_name, created_at"
+        private const val COLUMNS = "id, title, description, due_date, created_by, created_by_name, created_at, completed_at"
 
         private val rowMapper = RowMapper { rs, _ ->
             Task(
@@ -55,6 +66,7 @@ class TaskRepository(private val jdbc: JdbcClient) {
                 createdBy = rs.getString("created_by"),
                 createdByName = rs.getString("created_by_name"),
                 createdAt = rs.getObject("created_at", OffsetDateTime::class.java),
+                completedAt = rs.getObject("completed_at", OffsetDateTime::class.java),
             )
         }
     }

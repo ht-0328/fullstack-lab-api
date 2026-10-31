@@ -35,6 +35,15 @@ class TaskController(
         return ResponseEntity.created(URI.create("/api/tasks/${task.id}")).body(task.toDto())
     }
 
+    /**
+     * タスクを完了にする。既に完了していれば何もせず現状を返す（冪等。二重クリックや再送をエラーにしない）。
+     * 完了日時は最初の値のまま変えない
+     */
+    override fun completeTask(id: Long): ResponseEntity<TaskDto> {
+        val task = repository.complete(id) ?: findTask(id)
+        return ResponseEntity.ok(task.toDto())
+    }
+
     /** タスクの期限日について、外部カレンダーサービスから補足情報を取得する */
     override fun getTaskDueDateInfo(id: Long): ResponseEntity<DueDateInfoDto> {
         val dueDate = findTask(id).dueDate ?: throw NotFoundException("task $id has no due date")

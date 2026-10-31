@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
  * @param createdAt 
  * @param description 
  * @param dueDate 
+ * @param completedAt 完了日時。null なら未完了
  */
 
 
@@ -67,7 +68,12 @@ data class Task (
 
     @param:JsonProperty("dueDate")
     @get:JsonProperty("dueDate")
-    val dueDate: java.time.LocalDate? = null
+    val dueDate: java.time.LocalDate? = null,
+
+    /* 完了日時。null なら未完了 */
+    @param:JsonProperty("completedAt")
+    @get:JsonProperty("completedAt")
+    val completedAt: java.time.OffsetDateTime? = null
 
 ) {
 

@@ -50,6 +50,42 @@ open class TasksApi(client: RestClient) : ApiClient(client) {
 
 
     @Throws(RestClientResponseException::class)
+    fun completeTask(id: kotlin.Long): Task {
+        val result = completeTaskWithHttpInfo(id = id)
+        return result.body!!
+    }
+
+    @Throws(RestClientResponseException::class)
+    fun completeTaskWithHttpInfo(id: kotlin.Long): ResponseEntity<Task> {
+        val localVariableConfig = completeTaskRequestConfig(id = id)
+        return request<Unit, Task>(
+            localVariableConfig
+        )
+    }
+
+    fun completeTaskRequestConfig(id: kotlin.Long) : RequestConfig<Unit> {
+        val localVariableBody = null
+        val localVariableQuery = mutableMapOf<kotlin.String, kotlin.collections.List<kotlin.String>>()
+        val localVariableHeaders: MutableMap<String, String> = mutableMapOf()
+        localVariableHeaders["Accept"] = "application/json, application/problem+json"
+
+        val params = mutableMapOf<String, Any>(
+            "id" to id,
+        )
+
+        return RequestConfig(
+            method = RequestMethod.POST,
+            path = "/api/tasks/{id}/completion",
+            params = params,
+            query = localVariableQuery,
+            headers = localVariableHeaders,
+            requiresAuthentication = false,
+            body = localVariableBody
+        )
+    }
+
+
+    @Throws(RestClientResponseException::class)
     fun createTask(xUserId: kotlin.String, xUserName: kotlin.String, createTaskRequest: CreateTaskRequest): Task {
         val result = createTaskWithHttpInfo(xUserId = xUserId, xUserName = xUserName, createTaskRequest = createTaskRequest)
         return result.body!!
