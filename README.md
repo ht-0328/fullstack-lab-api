@@ -20,7 +20,7 @@
 | 種類 | 実行 | 確認すること |
 |---|---|---|
 | 単体テスト | `docker build --target test .` | `CalendarClientTest`：外部サービス呼び出しの契約（API キー、変換、エラー） |
-| API テスト（Karate） | `docker compose -f compose.test.yaml build && docker compose -f compose.test.yaml run --rm karate` | [karate/features/tasks.feature](karate/features/tasks.feature)：契約どおりの振る舞い（登録・取得・所有者での絞り込み・外部サービスの応答による補足情報・入力エラー・404） |
+| API テスト（Karate） | `docker compose -f compose.test.yaml build && docker compose -f compose.test.yaml run --rm karate` | [karate/features/tasks.feature](karate/features/tasks.feature)：契約どおりの振る舞い（登録・取得・所有者での絞り込み・完了（冪等）・外部サービスの応答による補足情報・入力エラー・404） |
 
 Karate は [compose.test.yaml](compose.test.yaml) で、この API と依存先（DB、WireMock）だけを立てて実行します。他のリポジトリは要りません。実行環境は [karate/Dockerfile](karate/Dockerfile)（JRE + Karate の実行ファイル）で、ホストに JDK は不要です。終わったら `docker compose -f compose.test.yaml down -v` で片付けます。
 

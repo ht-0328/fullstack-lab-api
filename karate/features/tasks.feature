@@ -12,13 +12,13 @@ Feature: タスク API（契約 openapi/api.yaml に沿った振る舞い）
     When method post
     Then status 201
     And match header Location contains '/api/tasks/'
-    And match response == { id: '#number', title: 'karate: 一覧と詳細', description: '説明', dueDate: '2026-12-01', createdBy: 'karate-user', createdByName: 'Karate', createdAt: '#string' }
+    And match response == { id: '#number', title: 'karate: 一覧と詳細', description: '説明', dueDate: '2026-12-01', createdBy: 'karate-user', createdByName: 'Karate', createdAt: '#string', completedAt: null }
     * def id = response.id
 
     Given path 'api/tasks', id
     When method get
     Then status 200
-    And match response == { id: '#(id)', title: 'karate: 一覧と詳細', description: '説明', dueDate: '2026-12-01', createdBy: 'karate-user', createdByName: 'Karate', createdAt: '#string' }
+    And match response == { id: '#(id)', title: 'karate: 一覧と詳細', description: '説明', dueDate: '2026-12-01', createdBy: 'karate-user', createdByName: 'Karate', createdAt: '#string', completedAt: null }
 
     Given path 'api/tasks'
     And param ownerId = 'karate-user'
@@ -40,6 +40,37 @@ Feature: タスク API（契約 openapi/api.yaml に沿った振る舞い）
     When method get
     Then status 200
     And match response[*].id !contains otherId
+
+  Scenario: タスクを完了にできる。再実行しても 200 で、完了日時は最初の値のまま（冪等）
+    Given path 'api/tasks'
+    And headers userHeaders
+    And request { title: 'karate: 完了' }
+    When method post
+    Then status 201
+    And match response.completedAt == null
+    * def id = response.id
+
+    Given path 'api/tasks', id, 'completion'
+    When method post
+    Then status 200
+    And match response contains { id: '#(id)', completedAt: '#string' }
+    * def completedAt = response.completedAt
+
+    Given path 'api/tasks', id, 'completion'
+    When method post
+    Then status 200
+    And match response.completedAt == completedAt
+
+    Given path 'api/tasks', id
+    When method get
+    Then status 200
+    And match response.completedAt == completedAt
+
+  Scenario: 存在しないタスクの完了は 404
+    Given path 'api/tasks', 999999999, 'completion'
+    When method post
+    Then status 404
+    And match response contains { status: 404 }
 
   Scenario Outline: 期限日の補足情報は外部カレンダーサービスの応答で決まる（<case>）
     Given path 'api/tasks'

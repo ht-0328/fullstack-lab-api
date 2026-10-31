@@ -12,6 +12,8 @@ data class Task(
     val createdBy: String,
     val createdByName: String,
     val createdAt: OffsetDateTime,
+    /** 完了日時。null なら未完了 */
+    val completedAt: OffsetDateTime?,
 )
 
 /** 新規登録の入力。API の DTO（CreateTaskRequest）から変換して受け取る */
